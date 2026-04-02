@@ -61,13 +61,57 @@
  *   // => item now has <span class="special-badge">Bestseller</span>
  */
 export function createSweetItem(name, price, category) {
-  // Your code here
+  if (
+    !name ||
+    typeof name !== "string" ||
+    name.trim() === "" ||
+    typeof price !== "number" ||
+    Number.isNaN(price) ||
+    !Number.isFinite(price) ||
+    price < 0 ||
+    !category ||
+    typeof category !== "string" ||
+    category.trim() === ""
+  ) {
+    return null;
+  }
+  const div = document.createElement("div");
+  div.classList.add("sweet-item");
+  div.innerHTML = `<h3>${name}</h3>
+  <p class="price">₹${price}</p>
+  <span class="category">${category}</span>`;
+  return div;
 }
 
 export function buildMenuBoard(sweets) {
-  // Your code here
+  if (!Array.isArray(sweets)) {
+    return null;
+  }
+  const menu = document.createElement("div");
+  menu.id = "menu-board";
+  sweets.forEach((sweet) => {
+    const createdEntry = createSweetItem(
+      sweet.name,
+      sweet.price,
+      sweet.category
+    );
+    menu.appendChild(createdEntry);
+  });
+  return menu;
 }
 
 export function addSpecialBadge(sweetElement, badgeText) {
-  // Your code here
+  if (
+    !sweetElement ||
+    !badgeText ||
+    typeof badgeText !== "string" ||
+    badgeText.trim() === ""
+  ) {
+    return null;
+  }
+  const specialBadge = document.createElement("span");
+  specialBadge.classList.add("special-badge");
+  specialBadge.textContent = badgeText;
+  sweetElement.appendChild(specialBadge);
+  return sweetElement;
 }
