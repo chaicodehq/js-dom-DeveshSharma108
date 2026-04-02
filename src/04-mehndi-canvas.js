@@ -72,21 +72,84 @@
  *   // => 2 (last frame applied: opacity is now "1")
  */
 export function applyBaseStyle(element, color, size) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+
+  element.style.backgroundColor = color;
+  element.style.width = size + "px";
+  element.style.height = size + "px";
+  element.style.borderRadius = "50%";
+  return element;
 }
 
 export function setPatternStyle(element, styles) {
-  // Your code here
+  if (!element) {
+    return -1;
+  }
+  if (!styles || Object.prototype.toString.call(styles) !== "[object Object]") {
+    return 0;
+  }
+  const entries = Object.entries(styles);
+  let applied = 0;
+  entries.forEach(([attribute, value]) => {
+    applied += 1;
+    element.style[attribute] = value;
+  });
+  return applied;
 }
 
+// will only return the inline style (although test cases got pass)
+// export function getComputedStyles(element, properties) {
+//   if (!element || !Array.isArray(properties)) {
+//     return null;
+//   }
+
+//   const computed = {};
+//   properties.forEach((property) => {
+//     computed[property] = element.style[property];
+//   });
+//   return computed;
+// }
+
 export function getComputedStyles(element, properties) {
-  // Your code here
+  if (!element || !Array.isArray(properties)) {
+    return null;
+  }
+
+  const computed = {};
+  const styles = getComputedStyle(element); // built-in function ....
+
+  properties.forEach((property) => {
+    computed[property] = styles[property];
+  });
+
+  return computed;
 }
 
 export function toggleVisibility(element) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+
+  if (element.style.display === "none") {
+    element.style.display = "";
+  } else {
+    element.style.display = "none";
+  }
+  return element.style.display;
 }
 
 export function animateElement(element, frames) {
-  // Your code here
+  if (!element || !Array.isArray(frames) || !frames.length) {
+    return -1;
+  }
+
+  const lastFrame = frames[frames.length - 1];
+
+  Object.entries(lastFrame).forEach(([key, value]) => {
+    element.style[key] = value;
+  });
+
+  return frames.length;
 }
