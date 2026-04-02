@@ -69,26 +69,78 @@
  *   getActiveColors(cell);
  *   // => ["red", "blue"]
  */
+
 export function addColors(element, ...colors) {
-  // Your code here
+  if (!element) {
+    return -1;
+  }
+
+  let unique = 0;
+  colors.forEach((color) => {
+    if (!element.classList.contains(color)) {
+      unique += 1;
+      element.classList.add(color);
+    }
+  });
+  return unique;
 }
 
 export function removeColors(element, ...colors) {
-  // Your code here
+  if (!element) {
+    return -1;
+  }
+
+  let present = 0;
+  colors.forEach((color) => {
+    if (element.classList.contains(color)) {
+      present += 1;
+      element.classList.remove(color);
+    }
+  });
+  return present;
 }
 
 export function togglePattern(element, pattern) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+  element.classList.toggle(`pattern-${pattern}`);
+  if (element.classList.contains(`pattern-${pattern}`)) {
+    return true;
+  }
+  return false;
 }
 
 export function hasDesign(element, designName) {
-  // Your code here
+  if (!element) {
+    return false;
+  }
+  if (element.classList.contains(`design-${designName}`)) {
+    return true;
+  }
+  return false;
 }
 
 export function replaceDesign(element, oldDesign, newDesign) {
-  // Your code here
+  if (!element) {
+    return false;
+  }
+  let present = true;
+  if (!element.classList.contains(`design-${oldDesign}`)) {
+    present = false;
+  }
+  element.classList.remove(`design-${oldDesign}`);
+  element.classList.add(`design-${newDesign}`);
+  return present;
 }
 
 export function getActiveColors(element) {
-  // Your code here
+  if (!element) {
+    return [];
+  }
+
+  const classes = [...element.classList];
+  return classes
+    .filter((cls) => cls.startsWith("color-"))
+    .map((cls) => cls.replace("color-", ""));
 }
