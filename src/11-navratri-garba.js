@@ -89,25 +89,89 @@
  *   // => deep clone of stage with id "stage-clone"
  */
 export function insertDancer(stage, newDancer, referenceDancer) {
-  // Your code here
+  if (!stage || !newDancer) {
+    return false;
+  }
+
+  if (referenceDancer) {
+    stage.insertBefore(newDancer, referenceDancer);
+  } else {
+    stage.appendChild(newDancer);
+  }
+
+  return true;
 }
 
 export function cloneDancer(dancer, deep) {
-  // Your code here
+  if (!dancer) {
+    return null;
+  }
+
+  const clone = dancer.cloneNode(deep);
+
+  if (clone.id) {
+    clone.id = clone.id + "-copy";
+  }
+
+  return clone;
 }
 
 export function replaceDancer(stage, oldDancer, newDancer) {
-  // Your code here
+  if (!stage || !oldDancer || !newDancer) {
+    return null;
+  }
+
+  const replaced = stage.replaceChild(newDancer, oldDancer);
+
+  return replaced;
 }
 
 export function removeDancer(stage, dancer) {
-  // Your code here
+  if (!stage || !dancer) {
+    return null;
+  }
+
+  try {
+    const removed = stage.removeChild(dancer);
+    return removed;
+  } catch {
+    return null;
+  }
 }
 
 export function rearrangeStage(stage, order) {
-  // Your code here
+  if (!stage || !Array.isArray(order)) {
+    return false;
+  }
+
+  const children = [...stage.children];
+
+  if (children.length !== new Set(order).size) {
+    return false;
+  }
+
+  const invalidIdx = order.some(
+    (idxValue) => idxValue < 0 || idxValue >= children.length
+  );
+
+  if (invalidIdx) {
+    return false;
+  }
+
+  order = order.map((idx) => children[idx]);
+  stage.append(...order);
+  return true;
 }
 
 export function duplicateFormation(stage) {
-  // Your code here
+  if (!stage) {
+    return null;
+  }
+
+  const clone = stage.cloneNode(true);
+  if (clone.id) {
+    clone.id = clone.id + "-clone";
+  }
+
+  return clone;
 }
