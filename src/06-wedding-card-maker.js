@@ -66,14 +66,145 @@
  *   guestList.getGuests();
  *   // => [{ name: "Priya", side: "bride" }]
  */
+
 export function setupGuestList(containerElement) {
-  // Your code here
+  if (!containerElement) {
+    return null;
+  }
+
+  function handleClick(event) {
+    const button = event.target.closest(".remove-btn");
+
+    if (button) {
+      const guestItem = button.closest(".guest-item");
+      if (guestItem) {
+        guestItem.remove();
+      }
+    }
+  }
+
+  containerElement.addEventListener("click", handleClick);
+
+  return {
+    addGuest(name, side) {
+      const div = document.createElement("div");
+      div.classList.add("guest-item");
+
+      div.dataset.name = name;
+      div.dataset.side = side;
+
+      const span = document.createElement("span");
+      span.textContent = name;
+
+      const button = document.createElement("button");
+      button.classList.add("remove-btn");
+      button.textContent = "Remove";
+
+      div.append(span, button);
+
+      containerElement.appendChild(div);
+      return div;
+    },
+
+    removeGuest(name) {
+      const guest = containerElement.querySelector(
+        `.guest-item[data-name="${name}"]`
+      );
+
+      if (guest) {
+        guest.remove();
+        return true;
+      }
+      return false;
+    },
+
+    getGuests() {
+      return [...containerElement.querySelectorAll(".guest-item")].map(
+        (guest) => ({
+          name: guest.dataset.name,
+          side: guest.dataset.side,
+        })
+      );
+    },
+  };
 }
 
 export function setupThemeSelector(containerElement, previewElement) {
-  // Your code here
+  if (!containerElement || !previewElement) {
+    return null;
+  }
+
+  function handleClick(event) {
+    const button = event.target.closest(".theme-btn");
+
+    if (button) {
+      const prevTheme = previewElement.dataset.theme;
+
+      if (prevTheme) {
+        previewElement.classList.remove(prevTheme);
+      }
+
+      previewElement.classList.add(button.dataset.theme);
+      previewElement.dataset.theme = button.dataset.theme;
+    }
+  }
+
+  const traditionalButton = document.createElement("button");
+  traditionalButton.classList.add("theme-btn");
+  traditionalButton.textContent = "traditional";
+  traditionalButton.dataset.theme = "traditional";
+
+  const modernButton = document.createElement("button");
+  modernButton.classList.add("theme-btn");
+  modernButton.textContent = "modern";
+  modernButton.dataset.theme = "modern";
+
+  const royalButton = document.createElement("button");
+  royalButton.classList.add("theme-btn");
+  royalButton.textContent = "royal";
+  royalButton.dataset.theme = "royal";
+
+  containerElement.append(traditionalButton, modernButton, royalButton);
+  containerElement.addEventListener("click", handleClick);
+
+  return {
+    getTheme() {
+      return !previewElement.dataset.theme
+        ? null
+        : previewElement.dataset.theme;
+    },
+  };
 }
 
 export function setupCardEditor(cardElement) {
-  // Your code here
+  if (!cardElement) {
+    return null;
+  }
+
+  function handleClick(event) {
+    const clickedElement = event.target.closest("[data-editable]");
+    const prevEditingEle = cardElement.querySelector(".editing");
+
+    if (prevEditingEle) {
+      prevEditingEle.classList.remove("editing");
+      prevEditingEle.contentEditable = "false";
+    }
+
+    if (clickedElement) {
+      clickedElement.classList.add("editing");
+      clickedElement.contentEditable = "true";
+    }
+  }
+  cardElement.addEventListener("click", handleClick);
+
+  return {
+    getContent(field) {
+      const element = cardElement.querySelector(`[data-editable="${field}"]`);
+      if (element) {
+        return element.textContent;
+      } else {
+        return null;
+      }
+    },
+  };
 }
