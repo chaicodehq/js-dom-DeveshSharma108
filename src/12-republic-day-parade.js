@@ -110,10 +110,161 @@
  *   dashboard.removeContingent("Punjab Regiment");
  *   // => true
  */
+
+// swapping can also be done instead of insertBefore .......
+
+function swapDomNodes(nodeA, nodeB) {
+  const parentA = nodeA.parentNode;
+  const parentB = nodeB.parentNode;
+
+  const nextA = nodeA.nextElementSibling;
+
+  const tempNode = document.createElement("span");
+
+  parentA.insertBefore(tempNode, nextA);
+  parentB.insertBefore(nodeA, nodeB);
+  parentA.insertBefore(nodeB, tempNode);
+
+  tempNode.remove();
+}
+
 export function createContingent(name, type, state, members) {
-  // Your code here
+  if (
+    typeof name !== "string" ||
+    typeof type !== "string" ||
+    typeof state !== "string" ||
+    !Array.isArray(members)
+  ) {
+    return null;
+  }
+
+  const container = document.createElement("div");
+  container.className = "contingent";
+
+  container.dataset.name = name;
+  container.dataset.type = type;
+  container.dataset.state = state;
+
+  const h3 = document.createElement("h3");
+  h3.textContent = name;
+
+  const typeSpan = document.createElement("span");
+  typeSpan.className = "type";
+  typeSpan.textContent = type;
+
+  const stateSpan = document.createElement("span");
+  stateSpan.className = "state";
+  stateSpan.textContent = state;
+
+  const ul = document.createElement("ul");
+
+  for (let member of members) {
+    const li = document.createElement("li");
+    li.textContent = member;
+    ul.appendChild(li);
+  }
+
+  container.append(h3, typeSpan, stateSpan, ul);
+
+  return container;
 }
 
 export function setupParadeDashboard(container) {
-  // Your code here
+  if (!container) {
+    return null;
+  }
+
+  function addContingent(contingent) {
+    const el = createContingent(
+      contingent.name,
+      contingent.type,
+      contingent.state,
+      contingent.members
+    );
+
+    if (!el) return null;
+
+    container.appendChild(el);
+    return el;
+  }
+
+  function removeContingent(name) {
+    const el = container.querySelector(`.contingent[data-name="${name}"]`);
+
+    if (!el) return false;
+
+    container.removeChild(el);
+    return true;
+  }
+
+  function moveContingent(name, direction) {
+    const el = container.querySelector(`.contingent[data-name="${name}"]`);
+
+    if (!el) return false;
+
+    if (direction === "up") {
+      const prev = el.previousElementSibling;
+      if (!prev) return false;
+
+      // el and prev can be swapped using the function (also correct logic) but insering before is also used there and the below logic is simple,uses less operations but do read the swap function and simulate cases where both node has different / same parent and if both are adjacent sibling of each other on a paper
+
+      // swapDomNodes(el, prev);
+      container.insertBefore(el, prev);
+      return true;
+    }
+
+    if (direction === "down") {
+      const next = el.nextElementSibling;
+      if (!next) return false;
+      // swapDomNodes(el, next);
+      container.insertBefore(next, el);
+      return true;
+    }
+
+    return false;
+  }
+
+  function getContingentsByType(type) {
+    const els = container.querySelectorAll(`.contingent[data-type="${type}"]`);
+
+    return Array.from(els);
+  }
+
+  function highlightState(state) {
+    const els = container.querySelectorAll(".contingent");
+
+    let count = 0;
+
+    els.forEach((el) => {
+      if (el.dataset.state === state) {
+        el.classList.add("highlight");
+        count++;
+      } else {
+        el.classList.remove("highlight");
+      }
+    });
+
+    return count;
+  }
+
+  function getParadeOrder() {
+    const els = container.querySelectorAll(".contingent");
+
+    return Array.from(els).map((el) => el.dataset.name);
+  }
+
+  function getTotalMembers() {
+    const all = container.querySelectorAll("li");
+    return all.length;
+  }
+
+  return {
+    addContingent,
+    removeContingent,
+    moveContingent,
+    getContingentsByType,
+    highlightState,
+    getParadeOrder,
+    getTotalMembers,
+  };
 }
