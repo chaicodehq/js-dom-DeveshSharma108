@@ -89,26 +89,114 @@
  *   filterPandalsByZone(container, "North");
  *   // => [pandal1, pandal3] (elements with data-zone="North")
  */
+
 export function createPandalElement(pandal) {
-  // Your code here
+  if (
+    !pandal ||
+    typeof pandal !== "object" ||
+    !pandal.name ||
+    !pandal.zone ||
+    !pandal.theme ||
+    typeof pandal.budget !== "number" ||
+    typeof pandal.rating !== "number"
+  ) {
+    return null;
+  }
+
+  const pandalDiv = document.createElement("div");
+  pandalDiv.className = "pandal";
+
+  pandalDiv.dataset.name = pandal.name;
+  pandalDiv.dataset.zone = pandal.zone;
+  pandalDiv.dataset.theme = pandal.theme;
+  pandalDiv.dataset.budget = pandal.budget;
+  pandalDiv.dataset.rating = pandal.rating;
+
+  pandalDiv.textContent = pandal.name;
+
+  return pandalDiv;
 }
 
 export function getPandalInfo(element) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+
+  const dataset = element.dataset;
+
+  return {
+    name: dataset.name,
+    zone: dataset.zone,
+    theme: dataset.theme,
+    budget: Number(dataset.budget),
+    rating: Number(dataset.rating),
+  };
 }
 
 export function updatePandalRating(element, newRating) {
-  // Your code here
+  if (
+    !element ||
+    typeof newRating !== "number" ||
+    newRating < 0 ||
+    newRating > 5
+  ) {
+    return null;
+  }
+
+  const old = Number(element.dataset.rating);
+  element.dataset.rating = newRating;
+  return old;
 }
 
 export function filterPandalsByZone(container, zone) {
-  // Your code here
+  if (!container || typeof zone !== "string") {
+    return [];
+  }
+
+  const pandals = container.querySelectorAll(".pandal");
+  const result = [];
+
+  pandals.forEach((pandal) => {
+    if (pandal.dataset.zone === zone) {
+      result.push(pandal);
+    }
+  });
+
+  return result;
 }
 
 export function getPandalsByBudgetRange(container, min, max) {
-  // Your code here
+  if (!container || typeof min !== "number" || typeof max !== "number") {
+    return [];
+  }
+
+  const pandals = container.querySelectorAll(".pandal");
+  const result = [];
+
+  pandals.forEach((pandal) => {
+    const budget = Number(pandal.dataset.budget);
+    if (budget >= min && budget <= max) {
+      result.push(pandal);
+    }
+  });
+
+  return result;
 }
 
 export function sortPandalsByRating(container) {
-  // Your code here
+  if (!container) {
+    return [];
+  }
+
+  const pandals = [...container.querySelectorAll(".pandal")];
+
+  pandals.sort((a, b) => {
+    return Number(b.dataset.rating) - Number(a.dataset.rating);
+  });
+
+  pandals.forEach((pandal) => {
+    container.appendChild(pandal);
+  });
+
+  return pandals;
 }
