@@ -86,30 +86,117 @@
  *   getQueueStats(container);
  *   // => { total: 2, waiting: 1, serving: 1, completed: 0 }
  */
+
 export function findQueueContainer(element) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+
+  const container = element.closest(".queue-container");
+
+  return container || null;
+
+  /*
+  Quick Note 
+  In js, || is a logical or operator that returns the first truthy value or the last value of the expression, while | is the bitwise operator 
+
+  && returns the first falsy value encountered or return the last one.
+
+  Falsy values in js are null, undefined, ''(empty string), NaN, 0, false everything else is truthy .........
+
+
+   */
 }
 
 export function getNextInQueue(element) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+
+  const next = element.nextElementSibling;
+
+  return next || null;
 }
 
 export function getPreviousInQueue(element) {
-  // Your code here
+  if (!element) {
+    return null;
+  }
+
+  const prev = element.previousElementSibling;
+  return prev || null;
 }
 
 export function getQueuePosition(element) {
-  // Your code here
+  if (!element || !element.parentNode) {
+    return -1;
+  }
+
+  const parent = element.parentNode;
+  const children = parent.children;
+
+  let position = -1;
+
+  for (let i = 0; i < children.length; i++) {
+    if (children[i] === element) {
+      position = i + 1;
+    }
+  }
+
+  return position;
 }
 
 export function moveToFront(element) {
-  // Your code here
+  if (!element || !element.parentNode) {
+    return false;
+  }
+
+  const parent = element.parentNode;
+
+  if (parent.firstElementChild === element) {
+    return false;
+  }
+
+  parent.insertBefore(element, parent.firstElementChild);
+
+  return true;
 }
 
 export function removeFromQueue(element) {
-  // Your code here
+  if (!element || !element.parentNode) {
+    return null;
+  }
+
+  const parent = element.parentNode;
+
+  parent.removeChild(element);
+
+  return element;
 }
 
 export function getQueueStats(queueContainer) {
-  // Your code here
+  if (!queueContainer) {
+    return null;
+  }
+
+  const children = queueContainer.children;
+
+  let total = children.length;
+  let waiting = 0;
+  let serving = 0;
+  let completed = 0;
+
+  for (let i = 0; i < children.length; i++) {
+    const el = children[i];
+
+    if (el.classList.contains("waiting")) {
+      waiting++;
+    } else if (el.classList.contains("serving")) {
+      serving++;
+    } else if (el.classList.contains("completed")) {
+      completed++;
+    }
+  }
+
+  return { total, waiting, serving, completed };
 }
